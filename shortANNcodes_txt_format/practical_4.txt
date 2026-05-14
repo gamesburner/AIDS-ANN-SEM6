@@ -1,0 +1,71 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# inputs
+X = np.array([
+    [1,2],
+    [2,4],
+    [3,6],
+    [4,8],
+
+    [1,3],
+    [2,6],
+    [3,9],
+    [4,12]
+])
+
+# outputs
+# -1 -> y = 2x
+# +1 -> y = 3x
+y = np.array([-1,-1,-1,-1, 1,1,1,1])
+
+
+# weights
+weights = np.zeros(2)
+bias = 0
+lr = 0.1
+
+
+# training
+for epoch in range(10):
+
+    for i in range(len(X)):
+
+        z = np.dot(X[i], weights) + bias
+
+        if z >= 0:
+            prediction = 1
+        else:
+            prediction = 0
+
+        error = y[i] - prediction
+
+        weights = weights + (lr * error * X[i])
+
+        bias = bias + (lr * error)
+
+
+# plotting points
+for i in range(len(X)):
+
+    if y[i] == 1:
+        plt.scatter(X[i][0], X[i][1], color="blue")
+    else:
+        plt.scatter(X[i][0], X[i][1], color="red")
+
+
+# decision boundary
+x = np.linspace(0,5,100)
+
+# w1x + w2y + b = 0
+# y = -(w1x + b) / w2
+
+y_line = -(weights[0] * x + bias) / weights[1]
+
+plt.plot(x, y_line, 'k--')
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Perceptron Decision Boundary")
+
+plt.show()

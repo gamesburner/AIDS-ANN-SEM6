@@ -1,0 +1,80 @@
+import numpy as np
+
+
+# Sigmoid Activation Function
+def sigmoid(x):
+
+    return 1 / (1 + np.exp(-x))
+
+
+# Derivative of Sigmoid
+def sigmoid_derivative(x):
+
+    return x * (1 - x)
+
+
+# Input and Output (XNOR)
+X = np.array([
+
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+
+])
+
+y = np.array([
+
+    [1],
+    [0],
+    [0],
+    [1]
+
+])
+
+
+# Random Weights and Biases
+np.random.seed(42)
+
+W1 = np.random.rand(2,2)
+b1 = np.random.rand(1,2)
+
+W2 = np.random.rand(2,1)
+b2 = np.random.rand(1,1)
+
+
+# Training
+learning_rate = 0.1
+
+for epoch in range(10000):
+
+    # Forward Propagation
+    hidden = sigmoid(np.dot(X, W1) + b1)
+
+    output = sigmoid(np.dot(hidden, W2) + b2)
+
+
+    # Error
+    error = y - output
+
+
+    # Backpropagation
+    d_output = error * sigmoid_derivative(output)
+
+    d_hidden = d_output.dot(W2.T) * sigmoid_derivative(hidden)
+
+
+    # Update Weights and Biases
+    W2 += hidden.T.dot(d_output) * learning_rate
+
+    b2 += np.sum(d_output, axis=0, keepdims=True) * learning_rate
+
+    W1 += X.T.dot(d_hidden) * learning_rate
+
+    b1 += np.sum(d_hidden, axis=0, keepdims=True) * learning_rate
+
+
+# Final Output
+print("Final Output:\n")
+
+print(output)

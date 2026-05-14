@@ -1,0 +1,56 @@
+import numpy as np
+
+
+class HopfieldNetwork:
+
+    def __init__(self, n_neuron):
+        self.weight = np.zeros((n_neuron, n_neuron))
+
+    def train(self, patterns):
+
+        for pattern in patterns:
+            self.weight += np.outer(pattern, pattern)
+
+        np.fill_diagonal(self.weight, 0)
+
+    def predict(self, pattern, steps):
+
+        x = np.array(pattern)
+
+        for _ in range(steps):
+            x = np.sign(np.dot(self.weight, x))
+
+        return x
+
+    def energy(self, pattern):
+
+        x = np.array(pattern)
+
+        return -0.5 * x @ self.weight @ x
+
+
+patterns = np.array([
+    [ 1, 1,-1,-1],
+    [-1,-1, 1, 1],
+    [ 1,-1, 1,-1],
+    [-1, 1,-1, 1]
+])
+
+
+network = HopfieldNetwork(4)
+
+network.train(patterns)
+
+
+# Prediction
+for pattern in patterns:
+
+    prediction = network.predict(pattern, 5)
+
+    print("Input Pattern:", pattern)
+
+    print("Predicted Pattern:", prediction)
+
+    print("Energy:", network.energy(prediction))
+
+    print()

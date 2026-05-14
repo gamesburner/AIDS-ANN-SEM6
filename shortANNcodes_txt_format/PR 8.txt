@@ -1,0 +1,66 @@
+import numpy as np
+
+
+
+# Sigmoid Function
+def sigmoid(x):
+
+    return 1 / (1 + np.exp(-x))
+
+# Derivative
+def sigmoid_derivative(x):
+
+    return x * (1 - x)
+
+
+
+# XOR Input and Output
+X = np.array([
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+])
+
+y = np.array([
+    [1],
+    [0],
+    [0],
+    [1]
+])
+
+# Random weights
+np.random.seed(42)
+
+W1 = np.random.uniform(size=(2,2))
+
+W2 = np.random.uniform(size=(2,1))
+
+b1 = np.random.uniform(size=(1,2))
+
+b2 = np.random.uniform(size=(1,1))
+
+# Training
+for epoch in range(10000):
+
+    hidden = sigmoid(np.dot(X, W1) + b1)
+
+    output = sigmoid(np.dot(hidden, W2) + b2)
+
+    error = y - output
+
+    d_output = error * sigmoid_derivative(output)
+
+    d_hidden = d_output.dot(W2.T) * sigmoid_derivative(hidden)
+
+    W2 += hidden.T.dot(d_output) * 0.1
+
+    b2 += np.sum(d_output, axis=0, keepdims=True) * 0.1
+
+    W1 += X.T.dot(d_hidden) * 0.1
+
+    b1 += np.sum(d_hidden, axis=0, keepdims=True) * 0.1
+
+print("Final Output After Training:\n")
+
+print(output)

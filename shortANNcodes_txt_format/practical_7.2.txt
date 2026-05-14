@@ -1,0 +1,112 @@
+import numpy as np
+
+
+class ART1:
+
+    def __init__(self, input_size, vigilance=0.8):
+
+        self.vigilance = vigilance
+
+        # Store cluster prototypes
+        self.clusters = []
+
+    # Similarity function
+    def match(self, input_pattern, cluster):
+
+        similarity = (
+            np.sum(np.minimum(input_pattern, cluster))
+            / np.sum(input_pattern)
+        )
+
+        return similarity
+
+    # Training
+    def train(self, input_patterns):
+
+        for input_pattern in input_patterns:
+
+            input_pattern = np.array(input_pattern)
+
+            found = False
+
+            # Compare with existing clusters
+            for i, cluster in enumerate(self.clusters):
+
+                similarity = self.match(
+                    input_pattern,
+                    cluster
+                )
+
+                print(
+                    "Input",
+                    input_pattern,
+                    "vs Cluster",
+                    i,
+                    "Similarity =",
+                    round(similarity, 2)
+                )
+
+                # Check vigilance
+                if similarity >= self.vigilance:
+
+                    print(
+                        input_pattern,
+                        "belongs to cluster",
+                        i
+                    )
+
+                    # Update cluster prototype
+                    self.clusters[i] = np.minimum(
+                        input_pattern,
+                        cluster
+                    )
+
+                    found = True
+                    break
+
+            # Create new cluster
+            if not found:
+
+                self.clusters.append(
+                    input_pattern.copy()
+                )
+
+                print(
+                    input_pattern,
+                    "creates new cluster",
+                    len(self.clusters) - 1
+                )
+
+        # Final clusters
+        print("\nFinal Clusters")
+
+        for i, cluster in enumerate(self.clusters):
+
+            print(
+                "Cluster",
+                i,
+                ":",
+                cluster
+            )
+
+
+# Input patterns
+inputs = [
+
+    [1,0,1,0,1],
+
+    [1,1,0,0,1],
+
+    [0,1,0,1,0],
+
+    [1,0,1,0,1]
+]
+
+# Create ART1 model
+art = ART1(
+    input_size=5,
+    vigilance=0.8
+)
+
+# Train network
+art.train(inputs)

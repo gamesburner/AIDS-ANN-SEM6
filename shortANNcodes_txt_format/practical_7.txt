@@ -1,0 +1,38 @@
+import numpy as np
+
+# inputs
+inputs = np.array([
+    [1,0,1,0,1],
+    [1,1,0,0,1],
+    [0,1,0,1,0],
+    [1,0,1,0,1]
+])
+
+vigilance = 0.8
+
+clusters = []
+
+for x in inputs:
+
+    found = False
+
+    for i, c in enumerate(clusters):
+
+        similarity = np.sum(np.minimum(x, c)) / np.sum(x)
+
+        if similarity >= vigilance:
+            print(x, "same cluster", i)
+
+            clusters[i] = np.minimum(x, c)
+
+            found = True
+            break
+
+    if not found:
+        clusters.append(x.copy())
+
+        print(x, "new cluster", len(clusters) - 1)
+
+
+for i, c in enumerate(clusters):
+    print("cluster", i, ":", c)

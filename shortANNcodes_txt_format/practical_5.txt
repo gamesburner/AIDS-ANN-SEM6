@@ -1,0 +1,118 @@
+import numpy as np
+
+
+class NeuralNetwork:
+
+    def __init__(self):
+
+        # Random Weights
+        self.W1 = np.random.rand(2, 4)
+
+        self.W2 = np.random.rand(4, 1)
+
+
+    # Sigmoid Activation
+    def sigmoid(self, x):
+
+        return 1 / (1 + np.exp(-x))
+
+
+    # Derivative of Sigmoid
+    def sigmoid_derivative(self, x):
+
+        return x * (1 - x)
+
+
+    # Forward Propagation
+    def forward(self, X):
+
+        self.hidden = self.sigmoid(
+            np.dot(X, self.W1)
+        )
+
+        self.output = self.sigmoid(
+            np.dot(self.hidden, self.W2)
+        )
+
+        return self.output
+
+
+    # Training using Backpropagation
+    def train(self, X, y, learning_rate, epochs):
+
+        for epoch in range(epochs):
+
+            output = self.forward(X)
+
+            error = y - output
+
+
+            # Backpropagation
+            d_output = error * self.sigmoid_derivative(output)
+
+            d_hidden = np.dot(
+                d_output,
+                self.W2.T
+            ) * self.sigmoid_derivative(self.hidden)
+
+
+            # Update Weights
+            self.W2 += learning_rate * np.dot(
+                self.hidden.T,
+                d_output
+            )
+
+            self.W1 += learning_rate * np.dot(
+                X.T,
+                d_hidden
+            )
+
+
+            # Print Error
+            if epoch % 1000 == 0:
+
+                print(
+                    "Epoch:",
+                    epoch,
+                    "Error:",
+                    np.mean(np.abs(error))
+                )
+
+
+# XOR Input and Output
+X = np.array([
+
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+
+])
+
+y = np.array([
+
+    [0],
+    [1],
+    [1],
+    [0]
+
+])
+
+
+# Create Network
+nn = NeuralNetwork()
+
+
+# Train Network
+nn.train(
+    X,
+    y,
+    learning_rate=0.1,
+    epochs=10000
+)
+
+
+# Final Prediction
+print("\nFinal Output:\n")
+
+print(nn.forward(X))

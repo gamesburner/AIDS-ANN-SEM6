@@ -1,0 +1,28 @@
+import numpy as np
+
+# Input values
+inputs = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+
+# Weights
+weight = np.array([1, -1])
+
+# Threshold
+T = 1
+
+# Perceptron Logic
+for x in inputs:
+
+    # Weighted sum -> (x1 * 1) + (x2 * -1)
+    z = np.dot(x, weight)
+
+    if z >= T:
+        output = 1
+    else:
+        output = 0
+
+    print(x, "->", output)
